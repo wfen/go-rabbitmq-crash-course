@@ -12,13 +12,19 @@ type App struct {
 
 func Run() error {
 	fmt.Println("Go RabbitMQ Crash Course")
-	rmq := rabbitmq.NewRabbitMQService()
 
+	rmq := rabbitmq.NewRabbitMQService()
 	app := App{
 		Rmq: rmq,
 	}
 
 	err := app.Rmq.Connect()
+	if err != nil {
+		return err
+	}
+	defer app.Rmq.Conn.Close()
+
+	err = app.Rmq.Publish("Hi!")
 	if err != nil {
 		return err
 	}
